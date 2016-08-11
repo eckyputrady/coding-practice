@@ -1,4 +1,5 @@
 import javaslang.Function2;
+import javaslang.Tuple;
 import javaslang.collection.Seq;
 import javaslang.collection.Stream;
 
@@ -106,11 +107,13 @@ public class SkiProblem {
 
         public Seq<Integer> getNeighborIndicesOf(int idx) {
             return Stream.of(
-                    idx + 1, // E
-                    idx - 1, // W
-                    idx + width, // S
-                    idx - width // N
-            ).filter(x -> x > 0 && x < length());
+                    Tuple.of(getX(idx) + 1, getY(idx)), // E
+                    Tuple.of(getX(idx) - 1, getY(idx)), // W
+                    Tuple.of(getX(idx), getY(idx) + 1), // S
+                    Tuple.of(getX(idx), getY(idx) - 1) // N
+            )
+            .filter(tuple -> tuple._1 >= 0 && tuple._1 < width && tuple._2 >= 0 && tuple._2 < height)
+            .map(tuple -> getIdx(tuple._1, tuple._2));
         }
 
         private int getX(int idx) {
@@ -119,6 +122,10 @@ public class SkiProblem {
 
         private int getY(int idx) {
             return idx / width;
+        }
+
+        private int getIdx(int x, int y) {
+            return (y * width) + x;
         }
     }
 }
